@@ -1,52 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>I miei animali Preferiti</title>
-    <link rel="stylesheet" href="style.css">
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Creazione del componente -->
     <script type="text/babel">
-        const AnimalsList = ()=>{
+      const { useState } = React;
 
-            const {useState} = React
+      function Modal({
+        title,
+        content,
+        show = false,
+        onClose = () => {},
+        onConfirm = () => {},
+      }) {
+        return (
+          show &&
+          ReactDOM.createPortal(
+            <div className="modal-container">
+              <div className="modal">
+                <h2>{title}</h2>
+                {content}
 
-            const [animals, setAnimals] = useState([])
+                <div>
+                  <button onClick={onClose}>Annulla</button>
+                  <button onClick={onConfirm}>Conferma</button>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        );
+      }
 
-            // const animals = ["Cane", "Gatto", "Coniglio"]
+      const AnimalsList = () => {
+        // Array dinamico
+        const [animals, setAnimals] = useState([]);
+        const [show, setShow] = useState(false);
+        const [newAnimal, setNewAnimal] = useState("");
 
-            return (
-                    <details>
-                        <ul>
-                            {
-                                animals.map((animal)=>{
-                                    return <li>{animal}</li>
-                                })
-                            }
-                        </ul>
-                    </details>
-                    )
-                }
+        const [animalsChoices, setAnimalsChoices] = useState([
+          "Cane",
+          "Gatto",
+          "Pappagallo",
+          "Cavallo",
+          "Panda",
+        ]);
 
-         const element = document.querySelector(".lista-animali")
-        ReactDOM.render(<AnimalsList/>, element )
+        function addAnimal() {
+          if (!newAnimal) return;
+
+          setAnimals((array) => [...array, newAnimal]);
+          setNewAnimal("");
+          setShow(false);
+        }
+
+        return (
+          <>
+            <button
+              onClick={() => {
+                setShow(true);
+              }}
+            >
+              Aggiungi Animale
+            </button>
+            <details>
+              <summary>Animali</summary>
+              <ul>
+                {animals.map((animal, i) => {
+                  return <li key={i}>{animal}</li>;
+                })}
+              </ul>
+            </details>
+            <Modal
+              show={show}
+              onClose={() => {
+                setShow(false);
+              }}
+              onConfirm={addAnimal}
+              title="Aggiungi animale"
+              content={
+                <input
+                  type="text"
+                  value={newAnimal}
+                  onChange={(event) => setNewAnimal(event.target.value)}
+                ></input>
+              }
+            />
+          </>
+        );
+      };
     </script>
 
-</head>
-<body>
+    <!-- Creare una root e mondate componente -->
+    <script type="text/babel">
+      const { createRoot } = ReactDOM;
+      const element = document.querySelector(".lista-animali");
+      const root = createRoot(element);
+      root.render(<AnimalsList />);
+    </script>
+  </head>
+  <body>
     <header>
       <h1>I miei animali Preferiti</h1>
     </header>
     <main>
-        <figure>
-            <img src="https://picsum.photos/400/300" alt="Immagine Casuale">
-        </figure>
-        <div class="lista-animali">
-        </div>
+      <figure>
+        <img src="https://picsum.photos/400/300" alt="Immagine Casuale" />
+      </figure>
+      <div class="lista-animali"></div>
     </main>
-      <footer>
+    <footer>
       <p>Creato con amore da... un collega sbadato! 🐾</p>
     </footer>
   </body>
