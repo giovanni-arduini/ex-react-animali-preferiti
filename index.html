@@ -19,6 +19,16 @@
     <script type="text/babel">
       const { useState } = React;
 
+      function Card({ title, image, description }) {
+        return (
+          <div>
+            <h2>{title}</h2>
+            <img src={image} />
+            <p>{description}</p>
+          </div>
+        );
+      }
+
       function Modal({
         title,
         content,
